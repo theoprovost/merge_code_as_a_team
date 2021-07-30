@@ -5,7 +5,7 @@ import requests
 starship_uri = 'https://swapi.dev/api/starships'
 
 
-def fetch(starship_uri, n=1):
+def starships_fetch(uri, n=1):
     response = requests.get(uri + '/?page=' + str(n))
     if response.status_code == 200:
         return response.json()
@@ -13,7 +13,7 @@ def fetch(starship_uri, n=1):
         return
 
 
-first_fetch = fetch(starship_uri)
+first_fetch = starships_fetch(starship_uri)
 
 total_result_c = first_fetch['count']
 n_page = len(first_fetch['results'])
@@ -22,7 +22,7 @@ total_iter_needed = round(total_result_c / n_page)
 
 fetched_data = []
 for i in range(1, total_iter_needed + 1):
-    fetched_data += fetch(uri, i)['results']
+    fetched_data += starships_fetch(starship_uri, i)['results']
 
 data = []
 
