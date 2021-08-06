@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import json
 
+'''Planets fetch start'''
 uri = 'https://swapi.dev/api/planets'
 
 n_planets = 10
@@ -14,7 +15,6 @@ for i in range(1, n_planets):
     else: 
         data = []
         
-
 columns = ['name','rotation_period','orbital_period', "diameter", "climate", "gravity", "terrain", "surface_water", "population", "residents", "films", "created", "edited","url"]
 planets_df = pd.DataFrame(columns=columns)
 planets_df
@@ -41,7 +41,6 @@ for index, row in enumerate(data):
 planets_df
 
 
-
 '''Films fetch start'''
 def fetch_films(page):
     uri = "https://swapi.dev/api/films/"
@@ -57,10 +56,8 @@ def transform_films(data, swfilms_df, n_film):
 
 col = ['episode_numero','title']
 swfilms_df = pd.DataFrame(columns=col)
-n = 6
 
 
-for i in range(1,n+1):
     data = fetch_films(i)
     swfilms_df = transform_films(data, swfilms_df, i)
 swfilms_df
@@ -104,4 +101,28 @@ df = pd.DataFrame(
 
 print(df)
 '''Starships fetch end'''
+
+
+'''People fetch start'''
+def fetch_people(page):
+    uri = "https://swapi.dev/api/people/"
+    url = f'{uri}{str(page)}/'
+    r = requests.get(url)
+    data = r.json()
+    return data
+
+def transform_people(data, swpeople_df, n_people):
+    swpeople_df.loc[n_film,'name'] = data['name']
+    swpeople_df.loc[n_film,'height'] = data['height']
+    return swpeople_df
+
+col = ['name','height']
+swpeople_df = pd.DataFrame(columns=col)
+n = 6
+
+for i in range(1,n+1):
+    data = fetch_people(i)
+    swpeople_df = transform_people(data, swpeople_df, i)
+swpeople_df
+
 
