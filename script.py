@@ -126,3 +126,40 @@ for i in range(1,n+1):
 swpeople_df
 
 
+
+'''species'''
+uri_species = 'https://swapi.dev/api/species/'
+def numspecies():
+    r = requests.get(uri_species)
+    if r.status_code == 200:
+        data = r.json()
+        count = data["count"]
+        return count
+    else:
+        return "Failed connection"
+    '''allspecies'''
+def fetch_all_species():
+    datalist=[]
+    for i in range (1, numspecies()+1):
+        url = f'{uri_species}{str(i)}'
+        r_species = requests.get(url)
+        if r_species.status_code == 200:
+            data_species = r_species.json()
+            datalist.append(data_species)
+    return datalist
+
+def swapi_df():
+    columns = ['name','classification','designation','average_height','skin_colors','hair_colors','eye_colors','average_lifespan','homeworld','language']
+    nspecies_df = pd.DataFrame(columns=columns)
+    for index, row in enumerate (fetch_all_species()):
+        nspecies_df.loc[index,'name'] = row['name']
+        nspecies_df.loc[index,'classification'] = row['classification']
+        nspecies_df.loc[index,'designation'] = row['designation']
+        nspecies_df.loc[index,'average_height'] = row['average_height']
+        nspecies_df.loc[index,'skin_colors'] = row['skin_colors']
+        nspecies_df.loc[index,'eye_colors'] = row['eye_colors']
+        nspecies_df.loc[index,'hair_colors'] = row['hair_colors']
+        nspecies_df.loc[index,'average_lifespan'] = row['average_lifespan']
+        nspecies_df.loc[index,'homeworld'] = row['homeworld']
+        nspecies_df.loc[index,'language'] = row['language']
+    return nspecies_df
