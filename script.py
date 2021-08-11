@@ -1,4 +1,7 @@
-<<<<<<< HEAD
+import pandas as pd
+import requests
+import json
+
 url_planets = 'https://swapi.dev/api/planets/'
 def fetch_num_planets ():
     r = requests.get(url_planets)
@@ -9,13 +12,12 @@ def fetch_num_planets ():
     else:
         return "NO DATA"
 fetch_num_planets()
-=======
-import pandas as pd
-import requests
-import json
 
+
+
+'''Planets fetch start'''
 uri = 'https://swapi.dev/api/planets'
->>>>>>> 533416f1ba1dee0a693a204a1cd3dd7b38f644ff
+
 
 def fetch_all_planets():
     datalist=[]
@@ -28,7 +30,7 @@ def fetch_all_planets():
     return datalist
 fetch_all_planets()
 
-<<<<<<< HEAD
+
 def planets_dframe():
     columns = ["name","climate","terrain","population","residents","films"]
     planets_df= pd.DataFrame(columns=columns)
@@ -40,8 +42,8 @@ def planets_dframe():
         planets_df.loc[index,'residents']=row['residents']
         planets_df.loc[index,'films']=row['films']
     return planets_df
-#print(planets_dframe())
-=======
+
+
 data = []
 for i in range(1, n_planets):
     response = requests.get(f'{uri}/{str(i)}')
@@ -50,7 +52,6 @@ for i in range(1, n_planets):
     else: 
         data = []
         
-
 columns = ['name','rotation_period','orbital_period', "diameter", "climate", "gravity", "terrain", "surface_water", "population", "residents", "films", "created", "edited","url"]
 planets_df = pd.DataFrame(columns=columns)
 planets_df
@@ -77,7 +78,6 @@ for index, row in enumerate(data):
 planets_df
 
 
-
 '''Films fetch start'''
 def fetch_films(page):
     uri = "https://swapi.dev/api/films/"
@@ -93,10 +93,8 @@ def transform_films(data, swfilms_df, n_film):
 
 col = ['episode_numero','title']
 swfilms_df = pd.DataFrame(columns=col)
-n = 6
 
 
-for i in range(1,n+1):
     data = fetch_films(i)
     swfilms_df = transform_films(data, swfilms_df, i)
 swfilms_df
@@ -141,4 +139,67 @@ df = pd.DataFrame(
 print(df)
 '''Starships fetch end'''
 
->>>>>>> 533416f1ba1dee0a693a204a1cd3dd7b38f644ff
+
+
+
+'''People fetch start'''
+def fetch_people(page):
+    uri = "https://swapi.dev/api/people/"
+    url = f'{uri}{str(page)}/'
+    r = requests.get(url)
+    data = r.json()
+    return data
+
+def transform_people(data, swpeople_df, n_people):
+    swpeople_df.loc[n_film,'name'] = data['name']
+    swpeople_df.loc[n_film,'height'] = data['height']
+    return swpeople_df
+
+col = ['name','height']
+swpeople_df = pd.DataFrame(columns=col)
+n = 6
+
+for i in range(1,n+1):
+    data = fetch_people(i)
+    swpeople_df = transform_people(data, swpeople_df, i)
+swpeople_df
+
+
+
+'''species'''
+uri_species = 'https://swapi.dev/api/species/'
+def numspecies():
+    r = requests.get(uri_species)
+    if r.status_code == 200:
+        data = r.json()
+        count = data["count"]
+        return count
+    else:
+        return "Failed connection"
+    '''allspecies'''
+def fetch_all_species():
+    datalist=[]
+    for i in range (1, numspecies()+1):
+        url = f'{uri_species}{str(i)}'
+        r_species = requests.get(url)
+        if r_species.status_code == 200:
+            data_species = r_species.json()
+            datalist.append(data_species)
+    return datalist
+
+def swapi_df():
+    columns = ['name','classification','designation','average_height','skin_colors','hair_colors','eye_colors','average_lifespan','homeworld','language']
+    nspecies_df = pd.DataFrame(columns=columns)
+    for index, row in enumerate (fetch_all_species()):
+        nspecies_df.loc[index,'name'] = row['name']
+        nspecies_df.loc[index,'classification'] = row['classification']
+        nspecies_df.loc[index,'designation'] = row['designation']
+        nspecies_df.loc[index,'average_height'] = row['average_height']
+        nspecies_df.loc[index,'skin_colors'] = row['skin_colors']
+        nspecies_df.loc[index,'eye_colors'] = row['eye_colors']
+        nspecies_df.loc[index,'hair_colors'] = row['hair_colors']
+        nspecies_df.loc[index,'average_lifespan'] = row['average_lifespan']
+        nspecies_df.loc[index,'homeworld'] = row['homeworld']
+        nspecies_df.loc[index,'language'] = row['language']
+    return nspecies_df
+
